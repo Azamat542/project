@@ -1,0 +1,38 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+
+
+
+int main(int argc, char* argv[]){
+
+    setlocale(0, "rus");
+
+    string a = "tea", b = "sugar", c = "bread", d = "lasty", f="laska";
+
+
+   char v;
+   cin >> v;
+
+    switch (v)
+    {
+    case '1':
+        cout << "Да ласты" << endl;
+        cout << a << endl << b << endl << c << endl << d << endl;
+        break;
+    case '2':
+        cout << "нет, Ласка" << endl;
+        cout << a << endl << b << endl << c << endl << f << endl;
+        break;
+    }
+    
+    
+
+    
+    
+
+    system("pause");
+    return 0;
+}
