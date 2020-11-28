@@ -1,0 +1,48 @@
+#include <iostream>
+#include <ctime>
+#include <conio.h>
+
+using namespace std;
+void main() {
+    srand(time(NULL));
+    setlocale(LC_ALL, "RUSSIAN");
+
+    char key;
+    int a = NULL, b = NULL, sign = NULL;
+    long Result = NULL;
+    do
+    {
+        sign = rand() % 4; a = rand() % 30; b = rand() % 20;
+        switch (sign) {
+        case 1:
+            cout << a << " - " << b << " = ";
+            cin >> Result;
+            if (Result == a - b) {
+                cout << "\tверно!\n";
+            }
+            else if (Result != a - b) {
+                cout << "\tНеверно!\n";
+            }
+            break;
+        case 2:
+            cout << a << " + " << b << " = ";
+            cin >> Result;
+            if (Result == a + b)
+                cout << "\tверно!\n";
+            else if (Result != a - b) {
+                cout << "\tНеверно!\n";
+            }
+            break;
+        case 3:
+            cout << a << " * " << b << " = ";
+            cin >> Result;
+            if (Result == a * b)
+                cout << "\tверно!\n";
+            else if (Result != a - b) {
+                cout << "\tНеверно!\n";
+            }
+            break;
+        }
+        key = _getch();
+    } while (key != 27);
+}
