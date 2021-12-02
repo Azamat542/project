@@ -1,0 +1,271 @@
+[10:56, 05.05.2021] Azamat: #include <iostream>
+#include <fstream>
+#include <string>
+#include "myarray.h"
+using namespace std;
+
+class Worker {
+private:
+	string name;
+	string position;
+	int age;
+	string mail;
+	string phone;
+	bool free = true;
+	int depar_id = 0;
+public:
+	Worker(string name, string position, int age, string mail, string phone) {
+		this->age = age;
+		this->mail = mail;
+		this->name = name;
+		this->phone = phone;
+		this->position = position;
+	}
+	Worker(){}
+	int getDepar_id() {
+		return depar_id;
+	}
+	void print() {
+		string s = "";
+		s.clear();
+		s = age + " \"" + position + " \"" + name + " \"" + mail + " \"" + phone;
+	}
+
+	static void read(MyArray<Worker>& ws) {
+		string s1, s2, s3, s4, s5;
+		ifstream file("workers.csv");
+		for (int i = 0; i < 5; i++) {
+			getline(file, s1, ';');
+			getline(file, s2, ';');
+			getline(file, s3, ';');
+			getline(file, s4,';');
+			getline(file, s5);
+			ws.push(Worker(s1, s2, stoi(s3), s4,s5));
+		}
+		file.close();
+	}
+	static void print(onelist<Worker>& work) {
+		for (int i = 0; i < work.size(); i++)
+		{
+			work[i].print();
+		}
+	}
+};
+class Department {
+
+private:
+	int id; 
+	string name;
+	string director;
+	string manager;
+	string disagner;
+public:
+
+	Department(int id, string name,string director,string manager,string disagner) {
+		this->id = id;
+		this->name = name;
+		this->director = director;
+		this->manager = manager;
+		this->disagner = disagner;
+	}
+	int CountInFile(string filename) {
+		int count = 0;
+		char c;
+		ifstream file(filename);
+		while (!file.eof()) {
+			file.get(c);
+			if (c == '\n') count++;
+		}
+		return count - 1;
+	}
+	Department(){}
+
+	 string getDirector(){
+		 return director;
+	 }
+
+	void print() {
+		string s = "";
+		s.clear();
+		s = id + " \"" + name + " \"" + director + " \"" + manager + " \"" + disagner;
+	}
+	static void read(MyArray<Department>& ds) {
+		string s1, s2, s3, s4, s5;
+		ifstream file("depar.csv");
+		for (int i = 0; i < 5; i++) {
+			getline(file, s1, ';');
+			getline(file, s2, ';');
+			getline(file, s3, ';');
+			getline(file, s4, ';');
+			getline(file, s5);
+			ds.push(Department(stoi(s1), s2, s3, s4, s5));
+		}
+		file.close();
+	}
+	static void print(onelist<Department>& deps) {
+		for (int i = 0; i < deps.size(); i++)
+		{
+			deps[i].print();
+		}
+	}
+};
+
+int main() {
+	onelist<worker> workers;
+	Worker::read(workers);
+	Worker::print(workers);
+
+	onelist<Department>deps;
+	Department::read(deps);
+	Department::print(deps);
+
+}
+[11:41, 05.05.2021] Azamat: depar
+[11:42, 05.05.2021] Azamat: #pragma once
+#include "Workers.h"
+
+class Department
+{
+private:
+    int id;
+    string name;
+    Worker* director;
+    Worker* manager;
+    Worker* designer;
+public:
+    static string filename;
+    Department(int id, string name) :id(id), name(name) {
+        director = manager = designer = nullptr;
+    }
+    Department() {}
+    void print() {
+        cout << id << ")" << name << endl;
+        cout << "Workers:" << endl;
+        if (director != nullptr) director->print();
+        if (manager != nullptr) manager->print();
+        if (designer != nullptr) designer->print();
+        LINE;
+    }
+    static void read(onelist<Department>& deps) {
+        string s1, s2;
+        ifstream file(filename);
+        for (int i = 0;i < Worker::CountInFile(filename);i++) {
+…
+[11:42, 05.05.2021] Azamat: work
+[11:42, 05.05.2021] Azamat: #pragma once
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <Windows.h>
+#include "onelist.h"
+using namespace std;
+#define RUS SetConsoleCP(1251); SetConsoleOutputCP(1251);
+#define INPUT(x) cout<<"Введите "<<(#x)<<" : "; cin>>x;
+#define INPUT_GL(x) cout<<"Введите "<<(#x)<<" : "; getline(cin,x);
+#define PRINT(x) cout<<(#x)<<" = "<<x<<endl;
+#define LINE cout<<"--------------------------------"<<endl;
+
+class Worker
+{
+private:
+    string name;
+    string position;
+    int age;
+    string mail;
+    string phone;
+
+    bool free = false;
+    int department_id = 0;
+    static string filename;
+public:
+    Worker(string name, string position, int age, string mail, string phone) {
+        this->name = name;
+        this->position = position;
+        this->age = age;
+        this->mail = mail;
+        this->phone = phone;
+    }
+    Worker() {}
+    void print() {
+        PRINT(name);
+        PRINT(position);
+        PRINT(age);
+        PRINT(mail);
+        PRINT(phone);
+        PRINT(free);
+        PRINT(department_id);
+    }
+    static int CountInFile(string filename) {
+        int counter = 0;
+        char c;
+        ifstream file;
+        file.open(filename);
+        while (!file.eof()) {
+            file.get(c);
+            if (c == '\n') counter++;
+        }
+        file.close();
+        return counter - 1;
+    }
+    static void read(onelist<Worker>& workers) {
+        int n = 5;
+        string* s = new string[n];
+        ifstream file(filename);
+        for (int i = 0; i < CountInFile(filename); i++) {
+            for (int j = 0; j < n; j++)
+                getline(file, s[j], (j != n - 1 ? ';' : '\n'));
+
+            workers.push_back(Worker(s[0], s[1], stoi(s[2]), s[3], s[4]));
+        }
+        file.close();
+    }
+    static void print(onelist<Worker>& work) {
+        for (int i = 0; i < work.size(); i++)
+        {
+            work[i].print();
+            LINE;
+        }
+    }
+    static Worker* getWorker(onelist<Worker>& workers, string position,int dep_id) {
+        for (int i = 0; i < workers.size(); i++)
+        {
+            if (workers[i].position == position && workers[i].free)
+            {
+                workers[i].free = false;
+                workers[i].department_id = dep_id;
+                return &workers[i];
+            }
+        }return nullptr;
+    }
+};
+
+string Worker::filename = "workers.csv";
+[11:42, 05.05.2021] Azamat: #include"Depar.h"
+int main() {
+	onelist<Worker> workers;
+	Worker::read(workers);
+	RUS;
+
+	onelist<Department>deps;
+	Department::read(deps);
+	
+	for (int i = 0; i < deps.size(); i++)
+	{
+		if (!deps[i].HasDirector())
+		{
+			deps[i].setDirector(
+				Worker::getWorker(workers, "Director",deps[i].getId()));
+		}
+		if (!deps[i].HasManager())
+		{
+			deps[i].setManager(
+				Worker::getWorker(workers, "Manager", deps[i].getId()));
+		}
+		if (!deps[i].HasDesigner())
+		{
+			deps[i].setDesigner(
+				Worker::getWorker(workers, "Designer", deps[i].getId()));
+		}
+		deps[i].print();
+	}
+}
