@@ -1,0 +1,46 @@
+import config
+import telebot
+import random
+
+from telebot import types
+from requests import get
+
+bot=telebot.TeleBot(config.TOKEN)
+
+@bot.message_handler(commands=[('start')])
+def welcome(message):
+    sti=open ('static/sticker.webp','rb')
+    bot.send_sticker(message.chat.id,sti)
+
+    markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
+    item1= types.KeyboardButton("Египет")
+    item2= types.KeyboardButton("Турция")
+    item3= types.KeyboardButton("ОАЭ")
+    item4= types.KeyboardButton("Мальдивы")
+    item5= types.KeyboardButton("Доминикана")
+    markup.add(item1,item2,item3,item4,item5)
+
+    bot.send_message(message.chat.id,"Здравствуйте! Добро пожаловать в Sueno Tour Almaty,{0.first_name}! \nТурагентство Sueno Tour предлагает туры из Алматы в Турцию, Египет, ОАЭ. Более 10 лет мы сотрудничаем только с проверенными партнерами. В нашем Telegram вы можете узнать цены на туры и горящие путевки от всех лучших туроператоров Алматы. Выберите страну в которую хотели бы политеть:".format(message.from_user,bot.get_me()),
+    parse_mode='html',reply_markup=markup)
+
+@bot.message_handler(content_types=['text'])
+def lalala (message):
+     
+   if message.chat.type=='private':
+       if message.text=="Египет":
+           bot.send_photo(message.chat.id, get("https://files.tpg.ua/pages2/87803/Egypt_main.jpg").content)
+           bot.send_message(message.chat.id,"Comfort class: \n-🇪🇬Sharm inn amarein 4* \n-🇪🇬Coral hills resort 4*\n-🇪🇬Sharming innn 4* \n-🇪🇬Royal naama bay 4* \nLux class \n-🇪🇬Il mercato hotel 5*\n -🇪🇬Amwaj oyoun 5* \n-🇪🇬Sharm dreams vacation club 5*\n - Domina coral buy 5*\n В стоимость входит трехразовое питание,трансфер,перелет. \nЦены узнавать по номеру:8(777)323-23-44")
+       elif message.text=="Турция":
+            bot.send_photo(message.chat.id, get("https://wantsee.world/wp-content/uploads/2019/03/Turkey-Tourism-Attractions.jpg").content)
+            bot.send_message(message.chat.id,"Ecomon class: \n-🇹🇷Citymax Bur 3* \n-🇹🇷Ibis al barsha 3* \n-🇹🇷Al farej hotel 3* \nComfort class \n-🇹🇷Armada bluebay 4* \n-🇹🇷Marina bablos 4* \n🇹🇷-Cassells al barsha 4* \nLux class \n-🇹🇷Habtoor grand resort 5* \n-🇹🇷Stella di marre 5* \n-🇹🇷Le royal meridian 5*\n В стоимость входит трехразовое питание,трансфер,перелет. \nЦены узнавать по номеру:8(777)323-23-44")
+       elif message.text=="ОАЭ":
+            bot.send_photo(message.chat.id, get("https://www.planetware.com/wpimages/2019/12/united-arab-emirates-in-pictures-beautiful-places-to-photograph-the-palm-jumeirah.jpg").content)
+            bot.send_message(message.chat.id,"Ecomon class: \n-🇦🇪Citymax Bur 3* \n-🇦🇪Ibis al barsha 3* \n-🇦🇪Al farej hotel 3* \nComfort class \n-🇦🇪Armada bluebay 4* \n-🇦🇪Marina bablos 4* \n-🇦🇪Cassells al barsha 4* \nLux class \n-🇦🇪Habtoor grand resort 5* \n-🇦🇪Stella di marre 5* \n-🇦🇪Le royal meridian 5*\nВ стоимость входит только завтраки,трансфер,перелет. \nЦены узнавать по номеру:8(777)323-23-44")
+       elif message.text=="Мальдивы":
+            bot.send_photo(message.chat.id, get("https://www.ahstatic.com/photos/9923_ho_00_p_1024x768.jpg").content)
+            bot.send_message(message.chat.id,"Ecomon class: \n🇲🇻Citymax Bur 3* \n-🇲🇻Ibis al barsha 3* \n-🇲🇻Al farej hotel 3* \nComfort class \n-🇲🇻Armada bluebay 4* \n-🇲🇻Marina bablos 4* \n-🇲🇻Cassells al barsha 4* \nLux class \n-🇲🇻Habtoor grand resort 5* \n-🇲🇻Stella di marre 5* \n-🇲🇻Le royal meridian 5*\nВ стоимость входит трехраозовое питание,трансфер,перелет. \nЦены узнавать по номеру:8(777)323-23-44")
+       elif message.text=="Доминикана":
+            bot.send_photo(message.chat.id, get("https://www.ahstatic.com/photos/9923_ho_00_p_1024x768.jpg").content)
+            bot.send_message(message.chat.id,"Ecomon class: \n🇲🇻Citymax Bur 3* \n-🇲🇻Ibis al barsha 3* \n-🇲🇻Al farej hotel 3* \nComfort class \n-🇲🇻Armada bluebay 4* \n-🇲🇻Marina bablos 4* \n-🇲🇻Cassells al barsha 4* \nLux class \n-🇲🇻Habtoor grand resort 5* \n-🇲🇻Stella di marre 5* \n-🇲🇻Le royal meridian 5*\nВ стоимость входит трехраозовое питание,трансфер,перелет. \nЦены узнавать по номеру:8(777)323-23-44")
+                  
+bot.polling (none_stop=True)
