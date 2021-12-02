@@ -1,0 +1,174 @@
+[11:56, 28.06.2021] Azamat: #pragma once
+#include "imports.h"
+
+class Contacts {
+	int user_id;
+	string phone;
+	string email;
+	string adress;
+public:
+	Contacts(int id, string p, string a, string e) : user_id(id), phone(p), email(e),adress(a){}
+	Contacts(){}
+
+	void print() {
+		PRINT(phone);
+		PRINT(adress);
+		PRINT(email);
+	}
+	void edit() {
+		bool temp;
+		cout << "Change Phone? 1-yes,2-no:"; cin >> temp;
+		if (temp) INPUT_GL(adress);
+
+		cout << "Change email? 1-yes,2-no"; cin >> temp;
+		if (temp) INPUT_GL(email);
+	}
+};
+[11:56, 28.06.2021] Azamat: /////USer
+[11:56, 28.06.2021] Azamat: #pragma once
+#include"Contacts.h"
+class User {
+protected:
+    int id;
+    string login;
+    string pwd;
+    Contacts contacts;
+    string GeneratePwd(int size = 10) {
+        string new_pwd, s;
+        s.append("qwertyuiopasdfghjklzxcvbnm");
+        s.append("QWERTYUIOPASDFGHJKLZXCVBNM");
+        s.append("1234567890");
+        s.append("!@#$%^&*");
+        for (int i = 0; i < size; i++) {
+            new_pwd += s[rand() % s.length()];
+        }
+        return new_pwd;
+    }
+public:
+    User(int id, string login, string pwd) :id(id), login(login), pwd(pwd){}
+    User() {}
+    User(string login):id(rand()%9999+1000),login(login),pwd(GeneratePwd()){}
+    virtual void print() = 0;
+    virtual void edit() = 0;
+    int getId() { return id; }
+    void setContacts(Contacts c){
+        this->contacts = c;
+    }
+};
+
+class Admin : public User {
+    string depar;
+    int ac_lvl;
+    string type;
+public:
+    Admin(int id, string login, string pwd, string depar, int ac_lvl, string type) :User(id,login,pwd), depar(depar), ac_lvl(ac_lvl), type(type) {}
+    Admin(string login):User(login),depar("is's dev"),ac_lvl(0),type("junior"){}
+    Admin() {}
+
+    void print() override {
+        PRINT(id);
+        PRINT(login);
+        PRINT(pwd);
+        PRINT(depar);
+        PRINT(ac_lvl);
+        PRINT(type);
+        contacts.print();
+    }
+    void edit() {
+        bool temp;
+        cout << "Change password? 1-yes,2-no:"; cin >> temp;
+        if (temp) INPUT_GL(pwd);
+
+        cout << "Change Depar? 1-yes,2-no:"; cin >> temp;
+        if (temp) INPUT_GL(depar);
+   
+        cout << "Change Login? 1-yes,2-no:"; cin >> temp;
+        if (temp) INPUT_GL(login);
+    }
+};
+
+class Customer : public User {
+    string subs;
+    int money;
+public:
+    Customer(int id, string login, string pwd, string st, int money) :User(id, login, pwd), subs(st), money(money) {}
+    Customer() {}
+    Customer(string login) :User(login), subs("none"), money(0) {}
+    void print() override {
+        PRINT(id);
+        PRINT(login);
+        PRINT(pwd);
+        PRINT(subs);
+        PRINT(money);
+
+        contacts.print();
+    }
+    void edit() override {
+        bool temp;
+        cout << "Change password? 1-yes,0-no :"; cin >> temp;
+        if (temp) INPUT_GL(pwd);
+        cout << "Change subscribe_type? 1-yes,0-no :"; cin >> temp;
+        if (temp) INPUT_GL(subs);
+        cout << "Change cash? 1-yes,0-no :"; cin >> temp;
+        if (temp) INPUT(money);
+    }
+};
+
+void read(vector<unique_ptr<User>>& v) {
+    string temp;
+    vector<string>p;
+    int n = 2;
+    ifstream file("users.csv");
+    for (int i = 0; i < n; i++)
+    {
+        getline(file, temp);
+        p = split(temp, ';');
+        if (p[0] == "admin")
+            v.push_back(unique_ptr<User>(new Admin(stoi(p[1]), p[2], p[3], p[4], stoi(p[5]), p[6])));
+        else
+        {
+            v.push_back(unique_ptr<User>(new Customer(stoi(p[1]), p[2], p[3], p[4], stoi(p[5]))));
+        }
+    }
+    file.close();
+    
+    
+}
+
+void print(vector<unique_ptr<User>>& v) {
+    for (auto& item : v) {
+        item->print();
+        LINE;
+    }
+}
+
+void read_cont(vector <unique_ptr<User>>& v) {
+    string temp;
+    vector<string> p;
+    ifstream file("contacts.csv");
+    for (int i = 0; i < v.size(); i++) {
+        getline(file, temp);
+        p = split(temp, ';');
+        for (auto& item : v) {
+            if (item->getId() == stoi(p[0])) {
+                item->setContacts(Contacts(stoi(p[0]), p[1], p[3], p[2]));
+                break;
+            }
+        }
+    }
+    file.close();
+}
+
+#include <string>
+#include <fstream>
+#include <vector>
+#include <iostream>
+using namespace std;
+#include "User.h"
+int main()
+{
+	vector <unique_ptr<User>> users;
+	read(users);
+	read_cont(users);
+	print(users);
+}
